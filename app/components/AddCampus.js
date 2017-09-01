@@ -78,7 +78,7 @@ class AddCampus extends React.Component {
         {students: state.students}
       );};
       
-      const mapDispatchToProps = {addcampus};
+      const mapDispatchToProps = {};
       
       
       export default connect(mapstate, mapDispatch)(AddCampuses);
