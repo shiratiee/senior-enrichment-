@@ -4,11 +4,12 @@ import {render} from 'react-dom'
 import { Provider } from 'react-redux'
 
 import store from './store'
+import Campuses from './Campuses'
 import Root from './components/Root'
 
 render (
   <Provider store={store}>
-    <Root/>
+  <Root/>
   </Provider>,
   document.getElementById('main')
 )
