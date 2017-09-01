@@ -66,7 +66,7 @@ class AddStudent extends Component {
         {students: state.students,campuses: state.campuses}
       );};
       
-      const mapDispatchToProps= {addstudent};
+      const mapDispatchToProps= {};
       
       
       export default connect(mapstate, mapDispatch)(AddStudent);
