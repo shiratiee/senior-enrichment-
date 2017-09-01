@@ -35,7 +35,7 @@ export default function reducer (campuses = [], action) {
     ));
 
     default:
-      return campuses;
+      return state;
   }
 }
 
