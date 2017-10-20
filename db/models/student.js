@@ -2,7 +2,7 @@
 const Sequelize = require('sequelize');
 const db = require('../index.js');
 
-const student= db.define('student', {
+const Student = db.define('Student', {
   name: {
     type: Sequelize.STRING,
     allowNull: false,
@@ -18,4 +18,4 @@ const student= db.define('student', {
     }
 });
 
-module.exports = student
+module.exports = Student

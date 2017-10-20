@@ -2,85 +2,57 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {NavLink, withRouter} from 'react-router-dom';
-import {AddCampus} from '../reducers/campuses';
+import {AddACampus} from '../reducers/campuses';
 
 
-
-// export default class AllCampuses extends Component {
-//     constructor() {
-//         super()
-//     }
-//     render() {
-//         return (
-//             <h1> All campuses </h1>
-//         )
-//     }
-// }
-
-class AddCampus extends React.Component {
-    
-        constructor(props) {
-            super(props);
-            this.state = {
-                name: '',
-                pictureUrl:''
-            }
-    
-            this.handleChange = this.handleChange.bind(this)
-            this.handleSubmit = this.handleSubmit.bind(this)
-        }
-    
-        handleChange(event) {
-            if(event.target.name === 'name'){
-              this.setState({name: event.target.value});
-            }else if(event.target.name === 'pictureUrl'){
-              this.setState({pictureUrl: event.target.value});
-            }
-          }
-    
-        handleSubmit(evt){
-            evt.preventDefault()
-            this.props.addCampus(this.state.name, this.state.pictureUrl)
-            this.setState({
-                name : ''
-            });
-        }
-    
-        render() {
-            return (
-                <div>		
-                    <form onSubmit={ this.handleSubmit }>
-                    <div className="form-group">
-                <label>Image URL</label>
-                <input 
-                    type='text'
-                    onChange={ this.handleChange}
-                    value={ this.state.pictureUrl }
-                />
-                </div>
-                <div className="form-group">
-                <label>Campus Name</label>
-                <input 
-                    type='text'
-                    onChange={ this.handleChange}
-                    value={ this.state.name }
-                />
-                </div>
-                <button>Add New Campus </button>
-              </form>
-          </div>
-            );
-        }
+function mapStateToProps(state){
+    return {
+        campuses : state.campuses
+    };
+}
+  
+function mapDispatchToProps(dispatch, ownProps){
+return {
+    handleSubmit: function(event){
+    event.preventDefault();
+    dispatch(addACampus({name: event.target.name.value, 
+        image: event.target.image.value}, 
+        ownProps.history));
     }
+  };
+}
+
+
     
-    const mapStateToProps = (state)=>{
-        return(
-        {students: state.students}
-      );};
+
+function AddCampus (props) {
+return(
+    <div>
+        <h3>Add Campus!</h3>
+        <form onSubmit={props.handleSubmit}>
+            <div>
+                <label>Enter Name:</label>
+                <input
+                    name='name'
+                    type='text'
+                />
+            </div>
+            <div>
+                <label>Enter Campus Photo Link</label>
+                <input
+                    name='url'
+                    type='text'
+                />
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+)
+}
+
+    
+    
       
-      const mapDispatchToProps = {};
-      
-      
-      export default connect(mapstate, mapDispatch)(AddCampuses);
+export default connect(mapStateToProps, mapDispatchToProps)(AddCampus);
       
     

@@ -4,68 +4,56 @@ const Student = require('../db/models').Student
 
 
 router.get('/', function (req, res, next) {
-    Student.findAll()
+    Student.findAll({})
         .then(student => res.json(student))
         .catch(next);
 });
 
-
 router.get('/:id', function (req, res, next) {
     Student.findOne({
-        where: {
-            id: req.params.id
-        }
+        where: {id: req.params.id},
+        include: [Campus]
     })
         .then(function (student) {
-            if (!student) {
-                res.sendStatus(404);
-            } else {
-                res.json(student)
-            }
+            !student ? res.sendStatus(404) : res.json(student)
         })
         .catch(next)
 });
 
-router.post('/', function (req, res, next) {
-    if (req.body) {
-        Student.create(req.body)
-            .then(student => res.json(student))
-            .catch(next);
-    } else {
-        res.sendStatus(500)
-    }
-});
-
-
-
-router.put('/:id', function (req, res, next) {
-    Student.findById({
-        where: {
-            id: req.params.id
-        }
+router.post('/', (req, res, next) => {
+    Student.create(req.body)
+      .then(user => res.json(user))
+      .catch(next)
+  })
+  
+  
+  
+router.put('/:id/', (req, res, next) => {
+    Student.update(req.body, {
+      where: {
+        id: req.params.id
+      }
     })
-        .then(function (beforeUpdatedStudent) {
-            Student.update(req.body)
-                .then(function (updatedStudent) {
-                    res.status(200).json(updatedStudent)
-                        .catch(next);
-                });
-        })
+    .then((result) => {
+      return Student.findOne({
+      where: { id: req.params.id}
+    })
+    })
+    .then(student => res.send(student))
 })
-router.delete('/:id', function (req, res) {
-    Students.destroy({
-        where: {
-            id: req.params.id
-        }
-    })
-        .then(function (deletedstudent) {
-            res.json({ deletedstudent });
+
+ router.delete('/:id/delete', (req, res, next) => {
+    Student.findOne({
+            where: {id: req.params.id}
         })
-        .catch(function (err) {
-            if (err) {
-                res.status(500).json();
-            }
+        .then((result) => {
+          return User.destroy({
+            where: {id: req.params.id}
+          })
+          .then((z) => {res.send(result)})
         })
+        .catch(next);
 });
+
 
 module.exports = router;

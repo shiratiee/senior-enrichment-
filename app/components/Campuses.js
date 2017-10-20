@@ -2,36 +2,36 @@ import React from 'react';
 import { withRouter, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-const Campuses = (props)=> {
-        return (
-          <div>
-            <h1>Campuses</h1>
-            <div className="row">
-            <Navlink to {'/AddCampus'} >Add New Campus </Navlink>
-              {props.campuses.map(campus => (
-                <div className="col-xs-4" key={ campus.id }>
-                <NavLink to={`/campuses/${campus.id}` className="thumbnail" </Navlink>
-                    <img src={ campus.imageUrl } />
-                    <div className="caption">
-                      <h2>
-                        <span>{ campus.name }</span>
-                      </h2>
-                    </div>
-                </div>
-              ))
-            }
-            </div>
-          </div>
-        );
-    };
 
+  const mapStateToProps = function (state) {
+    return {
+      campuses: state.campuses,
       
-
-
-const mapStateToProps = function (state) {
-  return {
-    campuses: state.campuses
+    };
   };
-};
+  
+  const Campuses = (props)=> {
+      return(
+        <ul>
+        <NavLink to={`/AddCampus`}>Add Campus</NavLink>
+        <h3>ALL CAMPUSES </h3>
+        {props.campuses.map(campus => {
+            return (
+                <div key={campus.id}>
+                <img src= { campus.image } />
+                    <NavLink  to={`/campuses/${campus.id}`}>
+                   
+                    <h4><span>{campus.name}</span></h4>
+                    </NavLink>
+                </div>
+            )
+        })}
+    </ul>
+)
+}
 
-export default withRouter(connect(mapStateToProps)(Campuses));
+    
+
+
+  
+export default connect(mapStateToProps)(Campuses);

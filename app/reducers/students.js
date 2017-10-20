@@ -6,32 +6,37 @@ const GET_STUDENTS = 'GET_STUDENTS';
 const CREATE_STUDENT = 'CREATE_STUDENT';
 const REMOVE_STUDENT = 'REMOVE_STUDENT';
 const UPDATE_STUDENT = 'UPDATE_STUDENT';
+const GET_ONE_STUDENT = 'GET_ONE_STUDENT';
 
 
 /* ------------   ACTION CREATORS     ------------------ */
 
 const allstudents   = students => ({ type: GET_STUDENTS, students });
+const getOneStudent = stuent => ({type: GET_ONE_STUDENT, student});
 const add = student => ({ type: CREATE_STUDENT, student });
 const remove = id  => ({ type: REMOVE_STUDENT, id });
 const update = student   => ({ type: UPDATE_STUDENT, student });
 
 /* ------------       REDUCERS     ------------------ */
 
-export default function reducer (campuses = [], action) {
+export default function reducer (state = [], action) {
   switch (action.type) {
 
     case GET_STUDENTS :
-    return Object.assign({}, state, {get_students: action.students});
+    return  action.students;
 
-  case CREATE_STUDENT:
+    case GET_ONE_STUDENT:
+    return action.campuses;
+
+    case CREATE_STUDENT:
     return [action.students, ...student];
 
-  case REMOVE_STUDENT:
-    return students.filter(campus => campus.id !== action.id);
+    case REMOVE_STUDENT:
+    return students.filter(student => student.id !== action.student.id);
 
-  case UPDATE_STUDENT:
-    return students.map(campus => (
-      action.campus.id === campus.id ? action.campus : campus
+    case UPDATE_STUDENT:
+    return students.map(student => (
+    action.student.id === student.id ? action.student : student
     ));
 
     default:
@@ -41,27 +46,56 @@ export default function reducer (campuses = [], action) {
 
 /* ------------   THUNK CREATORS     ------------------ */
 
-export const fetchAllStudents = () => dispatch => {
-  axios.get('/api/students')
-       .then(res => dispatch(init(res.data)))
-       .catch(err => console.error('Fetching students unsuccessful', err));
-};
+export function fetchStudents(){
+  return function thunk (dispatch) {
+    return axios.get('/api/student')
+      .then(res => res.data)
+      .then(students => dispatch(allstudents(students)));
+  };
+}
 
-export const removeCampuses = id => dispatch => {
-  dispatch(remove(id));
-  axios.delete(`/api/students/${id}`)
-       .catch(err => console.error(`Removing student: ${id} unsuccessful`, err));
-};
+export function createStudent (student) {
+  return function thunk (dispatch) {
+      return axios.post('/api/students', student)
+      .then( res => res.data)
+      .then(student => {
+        const action = add(student)
+        dispatch(action)
+      })
+    }
+  }
+  
+export function updateStudent (student) {
+  return function thunk (dispatch) {
+    return axios.put(`/api/students/${student.id}`, student)
+    .then( res => {
+      const action = update(res.data)
+      dispatch(action)
+    })
+    .catch(console.error)
+  }
+}
 
-export const addStudent = student => dispatch => {
-  axios.post('/api/campuses', student)
-       .then(res => dispatch(create(res.data)))
-       .catch(err => console.error(`Creating student: ${student} unsuccessful`, err));
-};
-
-export const updateStudent = (id, student) => dispatch => {
-  axios.put(`/api/campuses/${id}`, student)
-       .then(res => dispatch(update(student)))
-       .catch(err => console.error(`Updating student: ${student} unsuccessful`, err));
-};
-
+  
+export function removeStudent (studentId) {
+  return function thunk (dispatch) {
+    return axios.delete(`/api/students/${studentId}`)
+    .then( res => res.data)
+    .then(student => {
+      const action = remove(student)
+      dispatch(action)
+    })
+  }
+}
+  
+export function fetchStudent(studentId) {
+  return function thunk(dispatch) {
+      return axios.get(`/api/students/${studentId}`)
+          .then(res => res.data)
+          .then(student => {
+              const action = getOneStudent(student);
+              dispatch(action)
+          })
+  }   
+}
+  
