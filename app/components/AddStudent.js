@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {NavLink, withRouter} from 'react-router-dom';
 import {createStudent} from '../store';
 
-function AddStudent (props) {
+function AddStudent ({props}) {
     return(
         <div>
         <h3>Add A Student</h3>
